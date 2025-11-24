@@ -26,7 +26,6 @@ $params[] = $offset;
 $params[] = $per_page;
 $types .= "ii";
 
-// подготовка и привязка параметров
 $stmt = $connect->prepare($sql);
 $bind_names = array($types);
 for ($i = 0; $i < count($params); $i++) {
@@ -36,7 +35,6 @@ call_user_func_array(array($stmt, 'bind_param'), $bind_names);
 
 $stmt->execute();
 
-// Получение данных без get_result()
 $products = array();
 
 $stmt->store_result();
@@ -57,10 +55,8 @@ foreach ($fields as $index => $field_name) {
     $bind_vars[] = &$results[$field_name];
 }
 
-// связываем результат
 call_user_func_array(array($stmt, 'bind_result'), $bind_vars);
 
-// извлекаем данные
 while ($stmt->fetch()) {
     $row = array();
     foreach ($fields as $field_name) {
@@ -71,7 +67,6 @@ while ($stmt->fetch()) {
 $stmt->close();
 
 
-// Подсчёт общего количества записей для пагинации
 $count_sql = "SELECT COUNT(*) FROM Products WHERE price BETWEEN ? AND ?";
 $count_params = array($min, $max);
 $count_types = "ii";
@@ -91,7 +86,6 @@ call_user_func_array(array($count_stmt, 'bind_param'), $bind_names);
 
 $count_stmt->execute();
 
-// Вместо get_result() используем fetch_row()
 $count_stmt->bind_result($total);
 $count_stmt->fetch();
 $count_stmt->close();
@@ -117,7 +111,6 @@ require_once "../header_and_footer/aside1.php";
         <label>до</label>
         <input type="number" name="max" value="<?= $max ?>">
 
-        <!-- Сортировка по цене -->
         <label>Сортировка по цене:</label>
         <select name="sort">
             <option value="" <?= $sort == '' ? 'selected' : '' ?>>Без сортировки</option>

@@ -50,10 +50,18 @@ h2{
     font-size: 48px;
     margin-top: 6px;
 }
-p, label, a, input, select, span{
+p, label, a, input, select, span, td, tr{
     font-family: "p_text";
     font-size: 20px;
     margin: auto;
+}
+table{
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+}
+td, th{
+    border: solid 1px var(--black);
 }
 img{
     width: 50%;
@@ -200,6 +208,14 @@ input, select{
     height: 32px;
     width: 256px;
     margin: 4px 0;
+}
+tr input{
+    border: 0;
+    padding: 0;
+    height: 32px;
+    width: auto;
+    margin: 0;
+    max-width: 142px;
 }
 .button{
     border: 1px solid var(--black);

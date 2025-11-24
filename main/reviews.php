@@ -7,21 +7,18 @@ require_once '../code/db.php';
 $id_rent_source = isset($_POST['id_rent']) ? INPUT_POST : INPUT_GET;
 $received_id_rent = filter_input($id_rent_source, 'id_rent', FILTER_SANITIZE_NUMBER_INT);
 
-// --- НАЧАЛО ЛОГИКИ ОБРАБОТКИ ФОРМЫ ---
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
     $current_user_id = $_SESSION['id_user'];
     
     $rating = filter_input(INPUT_POST, 'rating', FILTER_VALIDATE_INT);
     if ($rating === false || $rating < 1 || $rating > 5) {
-        // Ошибка валидации рейтинга
     } else {
         $show_login = isset($_POST['login']) ? true : false;
         $show_first_name = isset($_POST['first_name']) ? true : false;
         $show_last_name = isset($_POST['last_name']) ? true : false;
         $show_patronymic = isset($_POST['patronymic']) ? true : false;
 
-        if ($show_login + $show_first_name + $show_last_name + $show_patronymic === false) {
-            // Ошибка валидации обязательных полей
+        if ($show_login + $show_first_name + $show_last_name === false) {
         } else {
             $comment = htmlspecialchars($_POST['text-input']);
             $date = date('Y-m-d H:i:s');
@@ -51,10 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
         }
     }
 }
-// --- КОНЕЦ ЛОГИКИ ОБРАБОТКИ ФОРМЫ ---
-
-
-// --- НАЧАЛО ПРОВЕРКИ ДОСТУПА К СТРАНИЦЕ ---
 
 if (!isset($_SESSION['id_user']) || empty($received_id_rent)) {
     header('Location: about_us.php');
@@ -65,7 +58,6 @@ $current_user_id = $_SESSION['id_user'];
 $canAccess = false;
 $hasExistingReview = false;
 
-// 1. Проверяем, есть ли уже отзыв для этого id_rent
 $review_check_sql = "SELECT 1 FROM Reviews WHERE id_rent = ? LIMIT 1";
 $review_check_stmt = $connect->prepare($review_check_sql);
 $review_check_stmt->bind_param("i", $received_id_rent);
@@ -77,7 +69,6 @@ if ($review_check_stmt->num_rows > 0) {
 }
 $review_check_stmt->close();
 
-// 2. Проверяем, что аренда существует, принадлежит пользователю и имеет статус 2
 $rent_check_sql = "SELECT 1 FROM Rent WHERE id_rent = ? AND id_user = ? AND id_status = 2 LIMIT 1";
 $rent_check_stmt = $connect->prepare($rent_check_sql);
 $rent_check_stmt->bind_param("ii", $received_id_rent, $current_user_id);
@@ -89,17 +80,11 @@ if ($rent_check_stmt->num_rows > 0) {
 }
 $rent_check_stmt->close();
 
-
-// 3. Если доступ запрещен ИЛИ отзыв уже существует, перенаправляем
 if (!$canAccess || $hasExistingReview) {
     header('Location: about_us.php');
     exit();
 }
 
-// --- КОНЕЦ ПРОВЕРКИ ДОСТУПА К СТРАНИЦЕ ---
-
-
-// Если код дошел до сюда, значит все проверки пройдены, и можно отображать страницу.
 require_once '../header_and_footer/header.php';
 require_once '../header_and_footer/aside1.php';
 ?>
