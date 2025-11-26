@@ -1,37 +1,29 @@
 <?php
 require_once "../code/db.php";
-if (!isset($_SESSION)) { session_start(); }
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: admin.php");
     exit;
 }
-
 $table = isset($_POST['table']) ? $_POST['table'] : '';
 $action = isset($_POST['action']) ? $_POST['action'] : '';
-$allowed = array('users','reviews','rent','products');
-
+$allowed = array('users', 'reviews', 'rent', 'products');
 if (!in_array($table, $allowed)) {
     header("Location: admin.php");
     exit;
 }
-
 $cols_map = array(
-    'users' => array('id_user','login','email','phone','first_name','last_name','patronymic','id_rule'),
-    'reviews' => array('id_review','id_user','id_rent','rating','comment','date','show_first_name','show_last_name','show_patronymic','show_login','id_moder_status'),
-    'rent' => array('id_rent','id_user','id_product','price','date','time','id_status'),
-    'products' => array('id_product','name_product','photo','price','weight','bucket_volume','digging_depth','engine_power','dimensions','speed','available','id_type')
+    'users' => array('id_user', 'login', 'email', 'phone', 'first_name', 'last_name', 'patronymic', 'id_rule'),
+    'reviews' => array('id_review', 'id_user', 'id_rent', 'rating', 'comment', 'date', 'show_first_name', 'show_last_name', 'show_patronymic', 'show_login', 'id_moder_status'),
+    'rent' => array('id_rent', 'id_user', 'id_product', 'price', 'date', 'time', 'id_status'),
+    'products' => array('id_product', 'name_product', 'photo', 'price', 'weight', 'bucket_volume', 'digging_depth', 'engine_power', 'dimensions', 'speed', 'available', 'id_type')
 );
-
 $cols = $cols_map[$table];
 $prefix = $table . '_';
 $data = array();
-
 foreach ($cols as $c) {
     $key = $prefix . $c;
     $data[$c] = isset($_POST[$key]) && $_POST[$key] !== '' ? $_POST[$key] : null;
 }
-
 if ($action === 'Найти') {
     $params = array();
     foreach ($data as $col => $val) {
@@ -43,7 +35,6 @@ if ($action === 'Найти') {
     header("Location: admin.php" . ($qs != '' ? '?' . $qs : ''));
     exit;
 }
-
 if ($action === 'Создать') {
     $insertCols = array();
     $insertVals = array();
@@ -60,7 +51,6 @@ if ($action === 'Создать') {
     header("Location: admin.php");
     exit;
 }
-
 if ($action === 'Изменить') {
     $idCol = $cols[0];
     if (!isset($data[$idCol]) || $data[$idCol] === null || $data[$idCol] === '') {
@@ -70,7 +60,8 @@ if ($action === 'Изменить') {
     $idVal = $connect->real_escape_string($data[$idCol]);
     $setParts = array();
     foreach ($data as $col => $val) {
-        if ($col === $idCol) continue;
+        if ($col === $idCol)
+            continue;
         if ($val !== null) {
             $setParts[] = "`$col` = '" . $connect->real_escape_string($val) . "'";
         }
@@ -82,7 +73,6 @@ if ($action === 'Изменить') {
     header("Location: admin.php");
     exit;
 }
-
 if ($action === 'Удалить') {
     $conds = array();
     foreach ($data as $col => $val) {
@@ -99,7 +89,6 @@ if ($action === 'Удалить') {
     header("Location: admin.php");
     exit;
 }
-
 header("Location: admin.php");
 exit;
 ?>

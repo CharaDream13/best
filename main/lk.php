@@ -5,7 +5,7 @@ if (isset($_SESSION['id_user'])) {
 }
 require_once '../code/db.php';
 $current_user_id = $_SESSION['id_user'];
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
 $per_page = 4;
 $offset = ($page - 1) * $per_page;
 $sql = "SELECT Rent.id_rent, Rent.price AS rent_price, Rent.date, Rent.time, Rent.id_status, Products.name_product, Products.photo 
@@ -76,26 +76,27 @@ require_once '../header_and_footer/aside1.php';
                                 <p>Цена аренды: <?= htmlspecialchars($row['rent_price']) ?> ₽</p>
                                 <p>Дата: <?= htmlspecialchars($row['date']) ?></p>
                                 <p>Длительность: <?= htmlspecialchars($row['time']) ?> ч</p>
-                                <p>Статус: 
+                                <p>Статус:
                                     <?php
-                                        switch ($row['id_status']) {
-                                            case 1:
-                                                echo "заявка открытая";
-                                                break;
-                                            case 2:
-                                                echo "заявка закрыта";
-                                                break;
-                                        }
+                                    switch ($row['id_status']) {
+                                        case 1:
+                                            echo "заявка открытая";
+                                            break;
+                                        case 2:
+                                            echo "заявка закрыта";
+                                            break;
+                                    }
                                     ?>
                                 </p>
                             </div>
                             <?php if ($row['id_status'] > 1): ?>
-                                <a href="reviews.php?id_rent=<?= urlencode($row['id_rent']) ?>" class="button">Хотите оставить отзыв?</a>
+                                <a href="reviews.php?id_rent=<?= urlencode($row['id_rent']) ?>" class="button">Хотите оставить
+                                    отзыв?</a>
                             <?php endif; ?>
                         </div>
                     </article>
                 <?php endforeach; ?>
-                <?php else: ?>
+            <?php else: ?>
                 <p>У вас не было аренд</p>
             <?php endif; ?>
         </div>
@@ -110,7 +111,6 @@ require_once '../header_and_footer/aside1.php';
                 <a class="button" href="?page=<?= $total_pages ?>">Последняя</a>
             <?php endif; ?>
         </div>
-
     </div>
 </div>
 <?php
